@@ -12,7 +12,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Registro de usuarios
+// Busca esta sección en tu server.js y reemplázala temporalmente:
 app.post('/api/auth/register', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -21,7 +21,12 @@ app.post('/api/auth/register', async (req, res) => {
             .from('usuarios')
             .insert([{ username, password_hash: passwordHash }]).select();
 
-        if (error) return res.status(400).json({ error: 'El nombre de usuario ya existe.' });
+        // ESTO NOS VA A DECIR EL ERROR REAL:
+        if (error) {
+            console.error("Error real de Supabase:", error);
+            return res.status(400).json({ error: `Supabase dice: ${error.message} (Código: ${error.code})` });
+        }
+        
         res.json({ success: true, user: data[0].username });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
